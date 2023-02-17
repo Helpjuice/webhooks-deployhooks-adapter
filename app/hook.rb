@@ -5,13 +5,7 @@ require 'excon'
 require 'json'
 
 class HookAdapter < Sinatra::Base
-  configure :production, :development do
-    enable :logging
-  end
-
   post '/' do
-    logger.info("Headers: #{request.env}")
-
     verify_authorization!
     verify_message_digest!
     verify_release_finished!
@@ -29,7 +23,7 @@ class HookAdapter < Sinatra::Base
   def verify_authorization!
     return unless authorization_enabled
 
-    halt 403 unless Rack::Utils.secure_compare(request.env['Authorization'], ENV['AUTHORIZATION'])
+    halt 403 unless Rack::Utils.secure_compare(request.env['HTTP_AUTH'], ENV['AUTHORIZATION'])
   end
 
   def authorization_enabled
@@ -52,7 +46,7 @@ class HookAdapter < Sinatra::Base
       webhook_secret,
       request.body.read
     )).strip
-    heroku_hmac = request.env['Heroku-Webhook-Hmac-SHA256']
+    heroku_hmac = request.env['HTTP_HEROKU_WEBHOOK_HMAC_SHA256']
 
     heroku_hmac && Rack::Utils.secure_compare(calculated_hmac, heroku_hmac)
   end

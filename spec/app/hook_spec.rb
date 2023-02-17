@@ -104,14 +104,14 @@ RSpec.describe HookAdapter do
     end
 
     it 'succeeds if the authorization header matches the configured value' do
-      post '/', webhook_release_finished_payload.to_json, 'Authorization' => 'Bearer 01234567-89ab-cdef-0123-456789abcdef'
+      post '/', webhook_release_finished_payload.to_json, 'HTTP_AUTH' => 'Bearer 01234567-89ab-cdef-0123-456789abcdef'
 
       expect(last_response.status).to eq(204)
       expect(last_response.body).to be_empty
     end
 
     it 'fails if the authorization header does not match the configured value' do
-      post '/', webhook_release_finished_payload.to_json, 'Authorization' => 'wrong-authorization'
+      post '/', webhook_release_finished_payload.to_json, 'HTTP_AUTH' => 'wrong-authorization'
 
       expect(last_response.status).to eq(403)
       expect(last_response.body).to be_empty
@@ -275,7 +275,7 @@ RSpec.describe HookAdapter do
                                ).strip
 
     {
-      'Heroku-Webhook-Hmac-SHA256' => signature
+      'HTTP_HEROKU_WEBHOOK_HMAC_SHA256' => signature
     }
   end
 end
