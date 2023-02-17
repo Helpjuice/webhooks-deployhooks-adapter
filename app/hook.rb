@@ -94,7 +94,7 @@ class HookAdapter < Sinatra::Base
       'head_long' => webhook_payload.dig('data', 'slug', 'commit'),
       'git_log' => webhook_payload.dig('data', 'slug', 'commit_description')&.strip,
       'prev_head' => '',
-      'release' => webhook_payload.dig('data', 'version')
+      'release' => "v#{webhook_payload.dig('data', 'version')}"
     }
   end
 
