@@ -23,7 +23,6 @@ class HookAdapter < Sinatra::Base
   def verify_authorization!
     return unless authorization_enabled
 
-    puts "Checking header value: #{request.env['Authorization']}"
     halt 403 unless Rack::Utils.secure_compare(request.env['Authorization'], ENV['AUTHORIZATION'])
   end
 
