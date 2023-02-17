@@ -10,9 +10,7 @@ class HookAdapter < Sinatra::Base
   end
 
   post '/' do
-    logger.info("HTTP_ENDPOINT: #{ENV['HTTP_ENDPOINT']}")
-    logger.info("AUTHORIZATION: #{ENV['AUTHORIZATION']} - #{request.env['Authorization']}")
-    logger.info("WEBHOOK_SECRET: #{ENV['WEBHOOK_SECRET']} - #{request.env['Heroku-Webhook-Hmac-SHA256']}")
+    logger.info("Headers: #{request.env}")
 
     verify_authorization!
     verify_message_digest!
