@@ -5,7 +5,15 @@ require 'excon'
 require 'json'
 
 class HookAdapter < Sinatra::Base
+  configure :production, :development do
+    enable :logging
+  end
+
   post '/' do
+    logger.info("HTTP_ENDPOINT: #{ENV['HTTP_ENDPOINT']}")
+    logger.info("AUTHORIZATION: #{ENV['AUTHORIZATION']} - #{request.env['Authorization']}")
+    logger.info("WEBHOOK_SECRET: #{ENV['WEBHOOK_SECRET']} - #{request.env['Heroku-Webhook-Hmac-SHA256']}")
+
     verify_authorization!
     verify_message_digest!
     verify_release_finished!
